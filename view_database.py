@@ -2,12 +2,23 @@ import sqlite3
 import os
 import sys
 
-db_path = os.path.join(os.path.dirname(__file__), "backend_yathra", "yathrakerala.db")
+def find_db():
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "backend_yathra", "yathrakerala.db"),
+        os.path.join(os.path.dirname(__file__), "..", "backend_yathra", "yathrakerala.db"),
+        r"C:\Users\Asus\OneDrive\Desktop\program\PROJECT\backend_yathra\yathrakerala.db"
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return os.path.abspath(p)
+    return os.path.abspath(candidates[0])
+
+db_path = find_db()
 
 def print_banner():
     print("=" * 80)
     print("       YATHRA KERALA - COMPLETE SQL DATABASE VIEWER")
-    print(f"       Database File: {os.path.abspath(db_path)}")
+    print(f"       Database File: {db_path}")
     print("=" * 80)
 
 def get_all_tables():
@@ -66,7 +77,6 @@ def inspect_table(table_name, limit=None):
         
         headers = rows[0].keys()
         
-        # Display each row in a clear key-value format
         for i, row in enumerate(rows, 1):
             print(f"  --- Record #{i} ---")
             for h in headers:
